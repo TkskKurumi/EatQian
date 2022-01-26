@@ -197,15 +197,17 @@
     let _ttreg = / t{1,2}(\d+)/,
         _clearttClsReg = / t{1,2}\d+| bad/;
     let _last_generated = 0;
-    w.randColumn = function() {
+    w.randColumn = function(change) {
         let ret = Math.floor(Math.random() * 1000) % 2;
         ret += _last_generated;
-        _last_generated = 2-_last_generated;
+        if(change)
+            _last_generated = 2-_last_generated;
         return ret
     }
     w.refreshGameLayer = function(box, loop, offset) {
         
-        let i = randColumn() + (loop ? 0 : 4);
+        let i = randColumn(true) + (loop ? 0 : 4);
+        console.log(box.id, "start", i%4>1);
         for (let j = 0; j < box.children.length; j++) {
             let r = box.children[j],
                 rstyle = r.style;
@@ -221,11 +223,12 @@
                 });
                 r.className += ' t' + (Math.floor(Math.random() * 1000) % 5 + 1);
                 r.notEmpty = true;
-                i = (Math.floor(j / 4) + 1) * 4 + randColumn();
+                i = (Math.floor(j / 4) + 1) * 4 + randColumn((j+4)<box.children.length);
             } else {
                 r.notEmpty = false;
             }
         }
+        console.log(box.id, "end", i%4>1);
         if (loop) {
             box.style.webkitTransitionDuration = '0ms';
             box.style.display = 'none';
