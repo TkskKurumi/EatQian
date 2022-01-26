@@ -197,10 +197,15 @@
     let _ttreg = / t{1,2}(\d+)/,
         _clearttClsReg = / t{1,2}\d+| bad/;
     let _last_generated = 0;
+    w.randColumn = function() {
+        let ret = Math.floor(Math.random() * 1000) % 2;
+        ret += _last_generated;
+        _last_generated = 2-_last_generated;
+        return ret
+    }
     w.refreshGameLayer = function(box, loop, offset) {
         
-        let i = Math.floor(Math.random() * 1000) % 2 + 2-_last_generated + (loop ? 0 : 4);
-        _last_generated=2-_last_generated
+        let i = randColumn() + (loop ? 0 : 4);
         for (let j = 0; j < box.children.length; j++) {
             let r = box.children[j],
                 rstyle = r.style;
@@ -216,7 +221,7 @@
                 });
                 r.className += ' t' + (Math.floor(Math.random() * 1000) % 5 + 1);
                 r.notEmpty = true;
-                i = (Math.floor(j / 4) + 1) * 4 + Math.floor(Math.random() * 1000) % 4;
+                i = (Math.floor(j / 4) + 1) * 4 + randColumn();
             } else {
                 r.notEmpty = false;
             }
